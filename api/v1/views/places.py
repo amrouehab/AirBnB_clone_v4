@@ -92,6 +92,15 @@ def post_place(city_id):
     instance.save()
     return make_response(jsonify(instance.to_dict()), 201)
 
+@app_views.route('/places_search', methods=['POST'], strict_slashes=False)
+def places_search():
+    """Search places based on request body"""
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Not a JSON"}), 400
+
+    places = storage.all(Place).values()
+    return jsonify([place.to_dict() for place in places])
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 @swag_from('documentation/place/put_place.yml', methods=['PUT'])
